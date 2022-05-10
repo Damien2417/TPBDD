@@ -1,18 +1,21 @@
 package controllers;
 
 import models.Acces;
+import models.Creneaux;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
-public class DAOAcces {
+public class DAO {
     private Connection connection;
     private Statement statement;
     private String url = "jdbc:mysql://localhost/test?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC";
     private String user = "root";
     private String pwd = "";
 
-    public DAOAcces() {
+    public DAO() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, user, pwd);
@@ -33,27 +36,6 @@ public class DAOAcces {
         }
     }
 
-    public ArrayList<Acces> listerDAO() {
-        ArrayList<Acces> arrayList = new ArrayList<>();
-        try {
-            Acces acces;
-            ResultSet rs = statement.executeQuery("SELECT * from acces");
-            while (rs.next()) {
-                acces = new Acces();
-                acces.setAge(rs.getInt("age"));
-                acces.setId(rs.getInt("id"));
-                acces.setLogin(rs.getString("login"));
-                acces.setPrenom(rs.getString("prenom"));
-                acces.setPassword(rs.getString("password"));
-                acces.setStatut(rs.getString("statut"));
-                arrayList.add(acces);
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur de connexion");
-        }
-        return arrayList;
-    }
-
     public boolean ConnexionDAO(Acces newUser) {
         try {
             PreparedStatement stmt = connection.prepareStatement("SELECT * from acces WHERE login=? AND password=?");
@@ -71,14 +53,35 @@ public class DAOAcces {
         return false;
     }
 
-    public void ajouterDAO(Acces item) {
+    public ArrayList<Creneaux> listerDAOCreneaux(String dateDebut ,String dateFin ) {
+        ArrayList<Creneaux> arrayList = new ArrayList<>();
         try {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO acces(`prenom`, `login`, `password`, `statut`, `age`) VALUES (?, ?, ?, ?,?)", Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, item.getPrenom());
-            stmt.setString(2, item.getLogin());
-            stmt.setString(3, item.getPassword());
-            stmt.setString(4, item.getStatut());
-            stmt.setInt(5, item.getAge());
+            Creneaux creneaux;
+            PreparedStatement stmt = connection.prepareStatement("SELECT * from creneaux WHERE date BETWEEN ? AND ?");
+            stmt.setString(1, dateDebut);
+            stmt.setString(2, dateFin);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                creneaux = new Creneaux();
+                creneaux.setId(rs.getInt("id"));
+                creneaux.setNom(rs.getString("nom"));
+                creneaux.setDate(rs.getDate("date"));
+                creneaux.setHeure(rs.getFloat("heure"));
+                arrayList.add(creneaux);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur de connexion");
+        }
+        return arrayList;
+    }
+
+    public void ajouterDAOCreneaux(Creneaux item) {
+        try {
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO creneaux(`date`, `nom`, `heure`) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setDate(1, (Date) item.getDate());
+            stmt.setString(2, item.getNom());
+            stmt.setFloat(3, item.getHeure());
             stmt.executeUpdate();
 
             ResultSet result = stmt.getGeneratedKeys();
@@ -91,9 +94,9 @@ public class DAOAcces {
         }
     }
 
-    public void supprimerDAO(Acces item) {
+    public void supprimerDAOCreneaux(Creneaux item) {
         try {
-            PreparedStatement stmt = connection.prepareStatement("DELETE FROM acces WHERE id=?");
+            PreparedStatement stmt = connection.prepareStatement("DELETE FROM creneaux WHERE id=?");
             stmt.setInt(1, item.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {

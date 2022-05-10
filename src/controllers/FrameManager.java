@@ -14,6 +14,7 @@ public class FrameManager {
     LoginView loginView;
     CreneauxView creneauxView;
     JFrame frame;
+    int pages=0;
     public FrameManager (JFrame frame){
         this.frame=frame;
         container = frame.getContentPane();
@@ -32,19 +33,19 @@ public class FrameManager {
             Acces acces = new Acces();
             acces.setLogin(userText);
             acces.setPassword(pwdText);
-            DAOAcces daoAcces = new DAOAcces();
-            if (daoAcces.ConnexionDAO(acces)) {
+            DAO dao = new DAO();
+            if (dao.ConnexionDAO(acces)) {
                 JOptionPane.showMessageDialog(container, "Bienvenue");
                 container.removeAll();
-                creneauxView = new CreneauxView(container);
+                creneauxView = new CreneauxView(container, 0);
                 container.revalidate();
                 container.repaint();
-
-
+                creneauxView.addNextButtonListener(new addNextButtonListener());
+                creneauxView.addBackButtonListener(new addBackButtonListener());
             } else {
                 JOptionPane.showMessageDialog(container, "Login ou mot de passe invalide");
             }
-            daoAcces.closeConnexion();
+            dao.closeConnexion();
         }
     }
     class ResetPasswordListener implements ActionListener {
@@ -60,6 +61,31 @@ public class FrameManager {
             } else {
                 loginView.passwordField.setEchoChar('*');
             }
+        }
+    }
+
+
+    class addNextButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+                pages+=7;
+                container.removeAll();
+                creneauxView = new CreneauxView(container, pages);
+                container.revalidate();
+                container.repaint();
+                creneauxView.addNextButtonListener(new addNextButtonListener());
+                creneauxView.addBackButtonListener(new addBackButtonListener());
+        }
+    }
+
+    class addBackButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+                pages-=7;
+                container.removeAll();
+                creneauxView = new CreneauxView(container, pages);
+                container.revalidate();
+                container.repaint();
+                creneauxView.addNextButtonListener(new addNextButtonListener());
+                creneauxView.addBackButtonListener(new addBackButtonListener());
         }
     }
 }
