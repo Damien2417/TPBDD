@@ -14,12 +14,14 @@ public class CreneauxView extends JPanel{
     Container container;
     public JButton loginButton = new JButton("Login");
     public JButton resetButton = new JButton("Reset");
+    private String[][] data;
+    private String[] columnNames;
+
     public CreneauxView(Container container){
         this.container=container;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
-
     }
 
     private String[] getWeekDays(int decalage){
@@ -48,16 +50,7 @@ public class CreneauxView extends JPanel{
     }
 
     public void addComponentsToContainer() {
-
-        // Data to be displayed in the JTable
-        String[][] data = {
-                { "9h", "", "", "" , "" , "" },
-                { "9h30", "", "", "", "", "" }
-        };
-
-        // Column Names
-        String[] columnNames = { "Horaires", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi" };
-
+        initializeArray();
         // Initializing the JTable
         JTable j = new JTable(data, columnNames);
         j.setBounds(30, 40, 200, 300);
@@ -75,6 +68,32 @@ public class CreneauxView extends JPanel{
 
         /*container.add(loginButton);
         container.add(resetButton);*/
+    }
+
+    public void initializeArray(){
+        data = new String[20][6];
+        columnNames = new String[] { "Horaires", "Lundi ", "Mardi ", "Mercredi ", "Jeudi ", "Vendredi " };
+
+        String[] days = getWeekDays(0);
+        float hour = 9;
+        for(int i=0;i<6;i++) {
+            if(i>0)
+                columnNames[i] = columnNames[i] + days[i-1];
+            for (int y = 0; y <= 19; y++) {
+                if(i==0) {
+                    String currentHour = Float.toString(hour);
+                    String destHour = Float.toString((float) (hour+0.5));
+                    if(currentHour.contains(".5"))
+                        data[y][i] = currentHour.replace(".5","h30")+" - "+destHour.replace(".0","h00");
+                    else
+                        data[y][i] = currentHour.replace(".0","h00")+" - "+destHour.replace(".5","h30");;
+                    hour+=0.5;
+                }
+                else
+                    data[y][i] = days[i-1];
+
+            }
+        }
     }
 
     public void JTableExamples() {
