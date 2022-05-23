@@ -1,6 +1,8 @@
 package controllers;
 
 import models.Acces;
+import models.Creneaux;
+import org.w3c.dom.events.MouseEvent;
 import views.LoginView;
 import views.CreneauxView;
 
@@ -8,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
 
 public class FrameManager {
     Container container;
@@ -15,6 +19,7 @@ public class FrameManager {
     CreneauxView creneauxView;
     JFrame frame;
     int pages=0;
+    Acces user;
     public FrameManager (JFrame frame){
         this.frame=frame;
         container = frame.getContentPane();
@@ -28,26 +33,34 @@ public class FrameManager {
         public void actionPerformed(ActionEvent e) {
             String userText;
             String pwdText;
-            userText =loginView. userTextField.getText();
+            userText = loginView.userTextField.getText();
             pwdText = loginView.passwordField.getText();
-            Acces acces = new Acces();
-            acces.setLogin(userText);
-            acces.setPassword(pwdText);
+            user = new Acces();
+            user.setLogin(userText);
+            user.setPassword(pwdText);
             DAO dao = new DAO();
-            if (dao.ConnexionDAO(acces)) {
+            user = dao.ConnexionDAO(user);
+
+            if (user != null & user.getStatut().length() > 0) {
                 JOptionPane.showMessageDialog(container, "Bienvenue");
-                container.removeAll();
-                creneauxView = new CreneauxView(container, 0);
-                container.revalidate();
-                container.repaint();
-                creneauxView.addNextButtonListener(new addNextButtonListener());
-                creneauxView.addBackButtonListener(new addBackButtonListener());
+                changePage();
             } else {
                 JOptionPane.showMessageDialog(container, "Login ou mot de passe invalide");
             }
             dao.closeConnexion();
         }
     }
+
+    private void changePage() {
+        container.removeAll();
+        creneauxView = new CreneauxView(container, pages, user);
+        container.revalidate();
+        container.repaint();
+        creneauxView.addNextButtonListener(new addNextButtonListener());
+        creneauxView.addBackButtonListener(new addBackButtonListener());
+        creneauxView.addTableListener(new cellInsert(creneauxView.getTable()));
+    }
+
     class ResetPasswordListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             loginView.userTextField.setText("");
@@ -63,29 +76,50 @@ public class FrameManager {
             }
         }
     }
-
-
     class addNextButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
                 pages+=7;
-                container.removeAll();
-                creneauxView = new CreneauxView(container, pages);
-                container.revalidate();
-                container.repaint();
-                creneauxView.addNextButtonListener(new addNextButtonListener());
-                creneauxView.addBackButtonListener(new addBackButtonListener());
+                changePage();
         }
     }
 
     class addBackButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
                 pages-=7;
-                container.removeAll();
-                creneauxView = new CreneauxView(container, pages);
-                container.revalidate();
-                container.repaint();
-                creneauxView.addNextButtonListener(new addNextButtonListener());
-                creneauxView.addBackButtonListener(new addBackButtonListener());
+                changePage();
+        }
+    }
+
+
+
+    class cellInsert extends MouseAdapter {
+        JTable jtable;
+
+        public cellInsert(JTable table) {
+            jtable = table;
+        }
+
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            int row = jtable.rowAtPoint(evt.getPoint());
+            int col = jtable.columnAtPoint(evt.getPoint());
+            JLabel hour = (JLabel)jtable.getModel().getValueAt(row, 0);
+            String[] dateTemp = jtable.getColumnName(col).split(" ")[1].split("/");
+            String dateFinal = dateTemp[2]+"-"+dateTemp[1]+"-"+dateTemp[0];
+
+            String[] hourSplit = hour.getText().split(" ")[0].split("h");
+            Float hourFinal = Float.parseFloat(hourSplit[0]+"."+Integer.parseInt(hourSplit[1])/6);
+
+            int result = JOptionPane.showConfirmDialog(null,"Voulez-vous réserver ce rendez-vous ? ("+jtable.getColumnName(col) + " " + hour.getText() +")", "Réservation", JOptionPane.OK_CANCEL_OPTION);
+            System.out.println(result);
+            if(result == 0){
+                DAO dao = new DAO();
+                System.out.println(user.getPrenom());
+                Creneaux creneaux = new Creneaux(dateFinal, hourFinal, user.getPrenom());
+                dao.ajouterDAOCreneaux(creneaux);
+                dao.closeConnexion();
+                changePage();
+            }
         }
     }
 }

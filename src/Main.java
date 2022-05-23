@@ -8,7 +8,6 @@ public class Main {
     private static void createAndShowGUI() {
         frame = new JFrame();
         FrameManager baseApp = new FrameManager(frame);
-
         frame.setTitle("TP BDD");
         frame.setVisible(true);
         frame.setBounds(10, 10, 1200, 800);

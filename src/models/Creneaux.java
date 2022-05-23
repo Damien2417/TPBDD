@@ -37,4 +37,17 @@ public class Creneaux {
     public void setHeure(float heure) {
         this.heure = heure;
     }
+
+    public Creneaux(int id, String nom, java.sql.Date date, float heure){
+        this.id=id;
+        this.nom=nom;
+        this.date=date;
+        this.heure=heure;
+    }
+
+    public Creneaux(String date, float heure, String nom){
+        this.heure=heure;
+        this.date=java.sql.Date.valueOf(date);
+        this.nom=nom;
+    }
 }

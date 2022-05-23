@@ -19,7 +19,6 @@ public class DAO {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, user, pwd);
-            System.out.println("Connecté");
             statement = connection.createStatement();
         } catch (Exception e) {
             System.err.println("Erreur : ");
@@ -36,21 +35,22 @@ public class DAO {
         }
     }
 
-    public boolean ConnexionDAO(Acces newUser) {
+    public Acces ConnexionDAO(Acces newUser) {
         try {
             PreparedStatement stmt = connection.prepareStatement("SELECT * from acces WHERE login=? AND password=?");
             stmt.setString(1, newUser.getLogin());
             stmt.setString(2, newUser.getPassword());
             ResultSet result = stmt.executeQuery();
             if (result.next() && result != null) {
-                return true;
-            } else {
-                return false;
+                newUser.setStatut(result.getString(5));
+                newUser.setPrenom(result.getString(2));
+                newUser.setId(result.getInt(1));
             }
+            return newUser;
         } catch (SQLException e) {
             System.out.println("Erreur de connexion");
         }
-        return false;
+        return null;
     }
 
     public ArrayList<Creneaux> listerDAOCreneaux(String dateDebut ,String dateFin ) {
@@ -62,11 +62,7 @@ public class DAO {
             stmt.setString(2, dateFin);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                creneaux = new Creneaux();
-                creneaux.setId(rs.getInt("id"));
-                creneaux.setNom(rs.getString("nom"));
-                creneaux.setDate(rs.getDate("date"));
-                creneaux.setHeure(rs.getFloat("heure"));
+                creneaux = new Creneaux(rs.getInt("id"),rs.getString("nom"),rs.getDate("date"),rs.getFloat("heure"));
                 arrayList.add(creneaux);
             }
         } catch (SQLException e) {
