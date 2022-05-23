@@ -75,6 +75,9 @@ public class CreneauxView extends JPanel{
         j.setRowHeight(35);
         j.setEnabled(false);
         j.setFillsViewportHeight(true);
+        j.getTableHeader().setBackground( new Color(136,112,76));
+
+
         JTableHeader header= j.getTableHeader();
         TableColumnModel colMod = header.getColumnModel();
         for(int i=0;i<6 ;i++) {
@@ -87,6 +90,7 @@ public class CreneauxView extends JPanel{
         renderer.setHorizontalAlignment( SwingConstants.CENTER );
         j.setDefaultRenderer(JLabel.class,new Renderer());
         j.getTableHeader().setReorderingAllowed(false);
+        j.getTableHeader().setResizingAllowed(false);
 
         container.add(nextButton);
         container.add(backButton);
@@ -144,7 +148,7 @@ public class CreneauxView extends JPanel{
                     if(check){
                         textField.setText(nom);
                     }else{
-                        textField.setText("Libre");
+                        textField.setText("");
                     }
                 }
                 arrayField[y][i]=textField;
@@ -162,10 +166,9 @@ public class CreneauxView extends JPanel{
     }
 
     private class Renderer extends DefaultTableCellRenderer{
-
-        Color lightBlue = new Color(40, 137, 173);
-        Color lightGreen = new Color(12, 168, 40);
-        Color lightGray = new Color(238, 238, 238);
+        Color libre = new Color(241,218,176);
+        Color reserve = new Color(212,213,207);
+        Color header = new Color(136,112,76);
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
         {
@@ -173,16 +176,19 @@ public class CreneauxView extends JPanel{
                 JLabel label = (JLabel)value;
                 //you can add the image here
                 String text= label.getText();
-                if(text=="Libre"){
-                    label.setBackground(Color.WHITE);
-                    label.setText("");
-                }else if(column==0){
-                    label.setBackground(lightGray);
-                }else{
-                    label.setBackground(Color.GRAY);
+
+                if(column==0){
+                    label.setBackground(header);
+                }
+                else if(text!=""){
+                    label.setBackground(reserve);
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
                     if(!user.getStatut().equals("Medecin")){
                         label.setText("");
                     }
+                }else{
+                    label.setBackground(libre);
+                    label.setText("");
                 }
                 label.setOpaque(true);
                 return label;

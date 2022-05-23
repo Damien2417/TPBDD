@@ -94,6 +94,7 @@ public class FrameManager {
 
     class cellInsert extends MouseAdapter {
         JTable jtable;
+        Color libre = new Color(241,218,176);
 
         public cellInsert(JTable table) {
             jtable = table;
@@ -103,22 +104,30 @@ public class FrameManager {
         public void mouseClicked(java.awt.event.MouseEvent evt) {
             int row = jtable.rowAtPoint(evt.getPoint());
             int col = jtable.columnAtPoint(evt.getPoint());
-            JLabel hour = (JLabel)jtable.getModel().getValueAt(row, 0);
-            String[] dateTemp = jtable.getColumnName(col).split(" ")[1].split("/");
-            String dateFinal = dateTemp[2]+"-"+dateTemp[1]+"-"+dateTemp[0];
 
-            String[] hourSplit = hour.getText().split(" ")[0].split("h");
-            Float hourFinal = Float.parseFloat(hourSplit[0]+"."+Integer.parseInt(hourSplit[1])/6);
+            JLabel jlabel = null;
+            try {
+                jlabel = (JLabel)jtable.getModel().getValueAt(row,col);
+            } catch (Exception e) {}
 
-            int result = JOptionPane.showConfirmDialog(null,"Voulez-vous réserver ce rendez-vous ? ("+jtable.getColumnName(col) + " " + hour.getText() +")", "Réservation", JOptionPane.OK_CANCEL_OPTION);
-            System.out.println(result);
-            if(result == 0){
-                DAO dao = new DAO();
-                System.out.println(user.getPrenom());
-                Creneaux creneaux = new Creneaux(dateFinal, hourFinal, user.getPrenom());
-                dao.ajouterDAOCreneaux(creneaux);
-                dao.closeConnexion();
-                changePage();
+            if(jlabel != null){
+                if(jlabel.getBackground().equals(libre)){
+                    JLabel hour = (JLabel)jtable.getModel().getValueAt(row, 0);
+                    String[] dateTemp = jtable.getColumnName(col).split(" ")[1].split("/");
+                    String dateFinal = dateTemp[2]+"-"+dateTemp[1]+"-"+dateTemp[0];
+
+                    String[] hourSplit = hour.getText().split(" ")[0].split("h");
+                    Float hourFinal = Float.parseFloat(hourSplit[0]+"."+Integer.parseInt(hourSplit[1])/6);
+
+                    int result = JOptionPane.showConfirmDialog(null,"Voulez-vous réserver ce rendez-vous ? ("+jtable.getColumnName(col) + " " + hour.getText() +")", "Réservation", JOptionPane.OK_CANCEL_OPTION);
+                    if(result == 0){
+                        DAO dao = new DAO();
+                        Creneaux creneaux = new Creneaux(dateFinal, hourFinal, user.getPrenom());
+                        dao.ajouterDAOCreneaux(creneaux);
+                        dao.closeConnexion();
+                        changePage();
+                    }
+                }
             }
         }
     }
