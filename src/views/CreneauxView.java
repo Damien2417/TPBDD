@@ -56,9 +56,13 @@ public class CreneauxView extends JPanel{
     }
 
     public void addComponentsToContainer(int page) {
-        initializeArray(page);
+
         // Initializing the JTable
-        JTable j = new JTable(dataModel);
+        //JTable j = new JTable(dataModel);
+        JTable j = new JTable();
+        j.setModel(initializeArray(page));//invoking our custom model
+        j.setDefaultRenderer(JLabel.class,  new Renderer());// for the rendering of cell
+
         j.setBounds(30, 40, 200, 300);
         j.setRowHeight(35);
         j.setEnabled(false);
@@ -70,9 +74,10 @@ public class CreneauxView extends JPanel{
             tabCol.setHeaderValue(columnNames[i]);
         }
         header.repaint();
-        
+
         DefaultTableCellRenderer renderer = (DefaultTableCellRenderer)j.getDefaultRenderer(Object.class);
         renderer.setHorizontalAlignment( SwingConstants.CENTER );
+        j.setDefaultRenderer(JLabel.class,new Renderer());
         j.getTableHeader().setReorderingAllowed(false);
 
         container.add(nextButton);
@@ -82,14 +87,15 @@ public class CreneauxView extends JPanel{
         container.add(j, BorderLayout.CENTER);
     }
 
-    public void initializeArray(int page){
+    public TableModel initializeArray(int page){
         data = new String[20][6];
-        ArrayList<ArrayList<JTextField>> arrayField = new ArrayList();
-        dataModel = new AbstractTableModel() {
+        Object[][] arrayField =  new Object[20][6];
+        /*dataModel = new AbstractTableModel() {
             public int getColumnCount() { return 6; }
             public int getRowCount() { return 20;}
-            public JTextField getValueAt(int row, int col) { return arrayField.get(row).get(col); }
-        };
+            public JLabel getValueAt(int row, int col) { return arrayField.get(col).get(row); }
+        };*/
+
         columnNames = new String[] { "Horaires", "Lundi ", "Mardi ", "Mercredi ", "Jeudi ", "Vendredi " };
 
         String[] days = getWeekDays(page,"dd/MM/yyyy");
@@ -100,7 +106,7 @@ public class CreneauxView extends JPanel{
         ArrayList<Creneaux> arrayList = dao.listerDAOCreneaux(daysUS[0],daysUS[daysUS.length-1]);
         java.sql.Date currentDate=null;
         for(int i=0;i<6 ;i++) {
-            ArrayList<JTextField> tempArrayField = new ArrayList();
+            Object[] tempArrayField = new Object[20];
             if(i>0){
                 columnNames[i] = columnNames[i] + days[i-1];
                 try {
@@ -112,7 +118,8 @@ public class CreneauxView extends JPanel{
                 }
             }
             for (int y = 0; y <= 19; y++) {
-                JTextField textField=new JTextField();
+                JLabel textField=new JLabel();
+                textField.setBounds(10,10,10,10);
                 if(i==0) {
                     String currentHour = Float.toString(hour);
                     String destHour = Float.toString((float) (hour+0.5));
@@ -141,10 +148,12 @@ public class CreneauxView extends JPanel{
                         textField.setText("Libre");
                     }
                 }
-                tempArrayField.add(textField);
+                tempArrayField[y]=textField;
             }
-            arrayField.add(tempArrayField);
+            arrayField[i]=tempArrayField;
         }
+        dataModel = new MyModel(columnNames,arrayField);
+        return dataModel;
     }
     public void addNextButtonListener(ActionListener al){
         nextButton.addActionListener(al);
@@ -154,7 +163,53 @@ public class CreneauxView extends JPanel{
         backButton.addActionListener(al);
     }
 
-    public void JTableExamples() {
+    private class Renderer extends DefaultTableCellRenderer{
+
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+        {
+            if(value instanceof JLabel){
+                JLabel label = (JLabel)value;
+                //you can add the image here
+                label.setBackground(Color.GREEN);
+                label.setOpaque(true);
+                return label;
+            }
+            else {
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        }
+    }
+    class MyModel extends javax.swing.table.DefaultTableModel{
+
+        Object[][] row = {{new JLabel("Row 1 Col 1"), "Row 1 Col 2", "Row 1 Col3"},
+                {new JLabel("Row 2 Col 1"), "Row 2 Col 2", "Row 2 Col3"},
+                {new JLabel("Row 3 Col 1"), "Row 3 Col 2", "Row 3 Col3"},
+                {new JLabel("Row 4 Col 1"), "Row 4 Col 2", "Row 4 Col3"}};
+
+        Object[] col = {"Column 1", "Column 2", "Column 3"};
+
+        public MyModel (Object[] col, Object[][] row){
+
+            //Adding columns
+            for(Object c: col)
+                this.addColumn(c);
+
+            //Adding rows
+            for(Object[] r: row)
+                addRow(r);
+
+        }
+
+        @Override
+
+        public Class getColumnClass(int columnIndex) {
+            if(columnIndex == 0)return getValueAt(0, columnIndex).getClass();
+
+            else return super.getColumnClass(columnIndex);
+
+        }
 
     }
 }
