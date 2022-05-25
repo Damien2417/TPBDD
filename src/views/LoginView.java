@@ -11,7 +11,20 @@ import java.io.IOException;
 public class LoginView {
 
     Container container;
+    BufferedImage myPicture;
+
+    {
+        try {
+            myPicture = ImageIO.read(new File("D:\\Programmation\\TPBDD\\src\\views\\logo.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    JLabel titleLabel = new JLabel(new ImageIcon(myPicture.getScaledInstance(320, 150, Image.SCALE_FAST)));
+
     public JLabel userLabel = new JLabel("Login");
+
     public JLabel passwordLabel = new JLabel("Mot de passe");
     public JTextField userTextField = new JTextField();
     public JPasswordField passwordField = new JPasswordField();
@@ -28,21 +41,27 @@ public class LoginView {
 
     public void setLayoutManager() {
         container.setLayout(null);
+        container.setBackground(new Color(0,151,228));
     }
 
     public void setLocationAndSize() {
+        titleLabel.setBounds(450, 50, 320, 150);
         userLabel.setBounds(475, 250, 100, 30);
+        userLabel.setForeground(Color.white);
         passwordLabel.setBounds(475, 320, 100, 30);
+        passwordLabel.setForeground(Color.white);
         userTextField.setBounds(575, 250, 150, 30);
         passwordField.setBounds(575, 320, 150, 30);
         showPassword.setBounds(575, 350, 150, 30);
+        showPassword.setForeground(Color.white);
         showPassword.setOpaque(false);
-        loginButton.setBounds(450, 400, 100, 30);
-        resetButton.setBounds(625, 400, 100, 30);
+        loginButton.setBounds(475, 400, 100, 30);
+        resetButton.setBounds(650, 400, 100, 30);
     }
 
 
     public void addComponentsToContainer() {
+        container.add(titleLabel);
         container.add(userLabel);
         container.add(passwordLabel);
         container.add(userTextField);

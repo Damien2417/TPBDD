@@ -4,9 +4,7 @@ import models.Acces;
 import models.Creneaux;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class DAO {
     private Connection connection;
@@ -45,8 +43,11 @@ public class DAO {
                 newUser.setStatut(result.getString(5));
                 newUser.setPrenom(result.getString(2));
                 newUser.setId(result.getInt(1));
+                return newUser;
             }
-            return newUser;
+            else{
+                return null;
+            }
         } catch (SQLException e) {
             System.out.println("Erreur de connexion");
         }

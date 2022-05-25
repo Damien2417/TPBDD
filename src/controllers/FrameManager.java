@@ -26,7 +26,7 @@ public class FrameManager {
 
         loginView = new LoginView(container);
 
-        for(int i=0;i<1;i++){
+        /*for(int i=0;i<1;i++){
             Nautilus nautilus = new Nautilus();
             Thread thread = new Thread(nautilus);
             thread.start();
@@ -34,7 +34,7 @@ public class FrameManager {
             SpiderMan spiderMan = new SpiderMan();
             Thread threadSpider = new Thread(spiderMan);
             threadSpider.start();
-        }
+        }*/
 
         loginView.addLoginListener(new LoginListener());
         loginView.addResetPasswordListener(new ResetPasswordListener());
@@ -52,10 +52,11 @@ public class FrameManager {
             user.setPassword(pwdText);
             DAO dao = new DAO();
             user = dao.ConnexionDAO(user);
-
-            if (user != null & user.getStatut().length() > 0) {
-                JOptionPane.showMessageDialog(container, "Bienvenue");
-                changePage();
+            if(user!= null){
+                if (user.getStatut().length() > 0) {
+                    JOptionPane.showMessageDialog(container, "Bienvenue");
+                    changePage();
+                }
             } else {
                 JOptionPane.showMessageDialog(container, "Login ou mot de passe invalide");
             }

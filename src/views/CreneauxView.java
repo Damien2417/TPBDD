@@ -70,10 +70,11 @@ public class CreneauxView extends JPanel{
         j.setRowHeight(35);
         j.setEnabled(false);
         j.setFillsViewportHeight(true);
-        j.getTableHeader().setBackground( new Color(136,112,76));
+        j.getTableHeader().setBackground( new Color(0,151,228));
 
 
         JTableHeader header= j.getTableHeader();
+        header.setForeground(Color.white);
         TableColumnModel colMod = header.getColumnModel();
         for(int i=0;i<6 ;i++) {
             TableColumn tabCol = colMod.getColumn(i);
@@ -163,7 +164,7 @@ public class CreneauxView extends JPanel{
     private class Renderer extends DefaultTableCellRenderer{
         Color libre = new Color(241,218,176);
         Color reserve = new Color(212,213,207);
-        Color header = new Color(136,112,76);
+        Color header =new Color(0,151,228);
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
         {
@@ -174,6 +175,7 @@ public class CreneauxView extends JPanel{
 
                 if(column==0){
                     label.setBackground(header);
+                    label.setForeground(Color.white);
                 }
                 else if(text!=""){
                     label.setBackground(reserve);
