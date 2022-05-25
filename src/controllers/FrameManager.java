@@ -4,8 +4,8 @@ import models.Acces;
 import models.Creneaux;
 import views.LoginView;
 import views.CreneauxView;
-import views.Nautilus;
-import views.SpiderMan;
+import views.resources.Nautilus;
+import views.resources.SpiderMan;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,15 +26,17 @@ public class FrameManager {
 
         loginView = new LoginView(container);
 
-        /*for(int i=0;i<1;i++){
+        //addGifs();
+        for(int i=0;i<0;i++){
             Nautilus nautilus = new Nautilus();
             Thread thread = new Thread(nautilus);
             thread.start();
 
+
             SpiderMan spiderMan = new SpiderMan();
             Thread threadSpider = new Thread(spiderMan);
             threadSpider.start();
-        }*/
+        }
 
         loginView.addLoginListener(new LoginListener());
         loginView.addResetPasswordListener(new ResetPasswordListener());
@@ -76,6 +78,31 @@ public class FrameManager {
         }
     }
 
+    private void addGifs(){
+        Icon icon = new ImageIcon("src/views/resources/web2.gif");
+        JLabel label = new JLabel();
+
+        label.setIcon(icon);
+        label.setBounds(700, 50, 500, 210);
+
+
+        Icon icon2 = new ImageIcon("src/views/resources/web3.gif");
+        JLabel label2 = new JLabel();
+
+        label2.setIcon(icon2);
+        label2.setBounds(50, 0, 360, 360);
+
+
+        Icon icon3 = new ImageIcon("src/views/resources/spiderman-dance.gif");
+        JLabel label3 = new JLabel();
+
+        label3.setIcon(icon3);
+        label3.setBounds(0, 500, 500, 210);
+
+        container.add(label);
+        container.add(label2);
+        container.add(label3);
+    }
     class ResetPasswordListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             loginView.userTextField.setText("");

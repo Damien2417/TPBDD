@@ -15,7 +15,7 @@ public class LoginView {
 
     {
         try {
-            myPicture = ImageIO.read(new File("D:\\Programmation\\TPBDD\\src\\views\\logo.png"));
+            myPicture = ImageIO.read(new File("./src/views/resources/logo.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

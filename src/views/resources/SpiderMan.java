@@ -1,11 +1,9 @@
-package views;
+package views.resources;
 
 import controllers.FrameManager;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -14,27 +12,31 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-public class Nautilus implements Runnable {
+public class SpiderMan implements Runnable {
     BufferedImage original=null;
     @Override
     public void run() {
         Random random = new Random();
-        int compteurX=random.nextInt(700);
-        int compteurY=random.nextInt(700);
-        int incrementX=10;
-        int incrementY=10;
+        int compteurX = random.nextInt(700);
+        int compteurY = random.nextInt(700);
+
+        int incrementX = 10;
+        int incrementY = 10;
         try {
-            original = convertToARGB(ImageIO.read(new File("D:\\Programmation\\TPBDD\\src\\views\\nautilus.png")));
+            original = convertToARGB(ImageIO.read(new File("./src/views/resources/spiderman.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ImageIcon normalIcon =  new ImageIcon(original.getScaledInstance(256, 181, Image.SCALE_FAST));
-        JLabel imageNautilus = new JLabel();
-        imageNautilus.setIcon(normalIcon);
-        FrameManager.container.add(imageNautilus);
+        ImageIcon normalIcon = new ImageIcon(original.getScaledInstance(256, 181, Image.SCALE_FAST));
+
+        JLabel imageSpiderMan = new JLabel();
+        imageSpiderMan.setIcon(normalIcon);
+        FrameManager.container.add(imageSpiderMan);
+
+
         boolean check = false;
         while(true) {
-            imageNautilus.setBounds(compteurX, compteurY, 256, 181);
+            imageSpiderMan.setBounds(compteurX, compteurY, 256, 181);
             FrameManager.container.revalidate();
             FrameManager.container.repaint();
 
@@ -48,26 +50,27 @@ public class Nautilus implements Runnable {
             compteurY+=incrementY;
 
 
-            if(compteurX>FrameManager.container.getWidth()-imageNautilus.getWidth()+50){
+
+            if(compteurX>FrameManager.container.getWidth()-imageSpiderMan.getWidth()+50){
                 incrementX = -(random.nextInt(6)+5);
                 check = true;
-                imageNautilus.setIcon(getImage(check,0));
-                playSound("nautilus.wav");
+                imageSpiderMan.setIcon(getImage(check,0));
+                playSound("../resources/web.wav");
             }
             if(compteurX<-30){
                 incrementX = random.nextInt(6)+5;
                 check = false;
-                imageNautilus.setIcon(getImage(check,0));
-                playSound("nautilus.wav");
+                imageSpiderMan.setIcon(getImage(check,0));
+                playSound("../resources/web.wav");
             }
 
-            if(compteurY>FrameManager.container.getHeight()-imageNautilus.getHeight()+50){
+            if(compteurY>FrameManager.container.getHeight()-imageSpiderMan.getHeight()+50){
                 incrementY = -(random.nextInt(6)+5);
-                imageNautilus.setIcon(getImage(check,0));
+                imageSpiderMan.setIcon(getImage(check,0));
             }
             if(compteurY<-30){
                 incrementY = random.nextInt(6)+5;
-                imageNautilus.setIcon(getImage(check,0));
+                imageSpiderMan.setIcon(getImage(check,0));
             }
         }
     }
@@ -135,4 +138,5 @@ public class Nautilus implements Runnable {
             }
         }).start();
     }
+
 }
