@@ -1,4 +1,4 @@
-package views.resources;
+package views;
 
 import controllers.FrameManager;
 
