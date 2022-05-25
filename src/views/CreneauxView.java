@@ -8,14 +8,9 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class CreneauxView extends JPanel{
@@ -154,7 +149,7 @@ public class CreneauxView extends JPanel{
                 arrayField[y][i]=textField;
             }
         }
-        dataModel = new MyModel(columnNames,arrayField);
+        dataModel = new DataModel(columnNames,arrayField);
         return dataModel;
     }
     public void addNextButtonListener(ActionListener al){
@@ -184,7 +179,13 @@ public class CreneauxView extends JPanel{
                     label.setBackground(reserve);
                     label.setHorizontalAlignment(SwingConstants.CENTER);
                     if(!user.getStatut().equals("Medecin")){
-                        label.setText("");
+                        if(user.getPrenom().equals(label.getText())){
+                            label.setText("Mon rendez-vous");
+                        }
+                        else{
+                            label.setText("");
+                        }
+
                     }
                 }else{
                     label.setBackground(libre);
@@ -198,13 +199,13 @@ public class CreneauxView extends JPanel{
             }
         }
     }
-    class MyModel extends javax.swing.table.DefaultTableModel{
+    class DataModel extends javax.swing.table.DefaultTableModel{
 
         Object[][] row;
 
         Object[] col;
 
-        public MyModel (Object[] col, Object[][] row){
+        public DataModel(Object[] col, Object[][] row){
 
             //Adding columns
             for(Object c: col)

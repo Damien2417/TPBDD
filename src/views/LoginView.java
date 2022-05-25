@@ -1,8 +1,12 @@
 package views;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class LoginView {
 
@@ -14,8 +18,6 @@ public class LoginView {
     public JButton loginButton = new JButton("Login");
     public JButton resetButton = new JButton("Reset");
     public JCheckBox showPassword = new JCheckBox("Voir mot de passe");
-
-
     public LoginView(Container container) {
         this.container = container;
         setLayoutManager();
@@ -34,6 +36,7 @@ public class LoginView {
         userTextField.setBounds(575, 250, 150, 30);
         passwordField.setBounds(575, 320, 150, 30);
         showPassword.setBounds(575, 350, 150, 30);
+        showPassword.setOpaque(false);
         loginButton.setBounds(450, 400, 100, 30);
         resetButton.setBounds(625, 400, 100, 30);
     }

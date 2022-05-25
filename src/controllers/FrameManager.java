@@ -2,19 +2,19 @@ package controllers;
 
 import models.Acces;
 import models.Creneaux;
-import org.w3c.dom.events.MouseEvent;
 import views.LoginView;
 import views.CreneauxView;
+import views.Nautilus;
+import views.SpiderMan;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
 
 public class FrameManager {
-    Container container;
+    static public Container container;
     LoginView loginView;
     CreneauxView creneauxView;
     JFrame frame;
@@ -23,7 +23,19 @@ public class FrameManager {
     public FrameManager (JFrame frame){
         this.frame=frame;
         container = frame.getContentPane();
+
         loginView = new LoginView(container);
+
+        for(int i=0;i<1;i++){
+            Nautilus nautilus = new Nautilus();
+            Thread thread = new Thread(nautilus);
+            thread.start();
+
+            SpiderMan spiderMan = new SpiderMan();
+            Thread threadSpider = new Thread(spiderMan);
+            threadSpider.start();
+        }
+
         loginView.addLoginListener(new LoginListener());
         loginView.addResetPasswordListener(new ResetPasswordListener());
         loginView.addShowPasswordListener(new ShowPasswordListener());
@@ -58,7 +70,9 @@ public class FrameManager {
         container.repaint();
         creneauxView.addNextButtonListener(new addNextButtonListener());
         creneauxView.addBackButtonListener(new addBackButtonListener());
-        creneauxView.addTableListener(new cellInsert(creneauxView.getTable()));
+        if(!user.getStatut().equals("Medecin")) {
+            creneauxView.addTableListener(new cellInsert(creneauxView.getTable()));
+        }
     }
 
     class ResetPasswordListener implements ActionListener {
